@@ -13,13 +13,48 @@
 
 </head>
 
-    <body>
-    <!-- Remove this line the first time you edit this file -->
-     This is the index page of your Django app!
-    <!--Add a nav bar here -->
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Dealership Review</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Services</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Contact</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-    <!--Add a dealer table here -->
+<div class="container">
+  <h2>Dealers Table</h2>
+  <table data-toggle="table" data-filter-control="true" data-pagination="true">
+    <thead>
+      <tr>
+        <th data-field="id">ID</th>
+        <th data-field="name">Name</th>
+        <th data-field="city">City</th>
+        <th data-field="state">State</th>
+        <th data-field="zip">ZIP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Add your dealer table data here -->
+    </tbody>
+  </table>
+</div>
 
-    </body>
+</body>
 
 </html>
