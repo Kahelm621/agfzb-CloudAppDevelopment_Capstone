@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'djangobackend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # Change if your database has a different name
+        'USER': 'postgres',
+        'PASSWORD': 'Nzg3Mi15bHVvLTIz',
+        'HOST': 'yluo-5050.theiadocker-1.proxy.cognitiveclass.ai',
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
