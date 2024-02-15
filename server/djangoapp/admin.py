@@ -27,3 +27,4 @@ admin.site.register(Instructor, InstructorAdmin)
 admin.site.register(CarMake, CarMakeAdmin)
 admin.site.register(CarModel)
 admin.site.register(Lesson)
+
