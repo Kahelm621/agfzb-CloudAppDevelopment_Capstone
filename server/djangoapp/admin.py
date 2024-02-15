@@ -1,13 +1,28 @@
 from django.contrib import admin
-# from .models import related models
+from .models import CarMake, CarModel, Course, Instructor, Lesson
 
+class CourseAdmin(admin.ModelAdmin):
+    fields = ['pub_date', 'name', 'description']
 
-# Register your models here.
+class InstructorAdmin(admin.ModelAdmin):
+    fields = ['user', 'full_time']
 
-# CarModelInline class
+class LessonInline(admin.StackedInline):
+    model = Lesson 
+    extra = 5
 
-# CarModelAdmin class
+class CourseAdminWithLesson(admin.ModelAdmin):
+    fields = ['pub_date', 'name', 'description']
+    inlines = [LessonInline]
 
-# CarMakeAdmin class with CarModelInline
+class CarModelInline(admin.TabularInline):
+    model = CarModel
 
-# Register models here
+class CarMakeAdmin(admin.ModelAdmin):
+    inlines = [CarModelInline]
+
+admin.site.register(Course, CourseAdmin)
+admin.site.register(Instructor, InstructorAdmin)
+admin.site.register(CarMake, CarMakeAdmin)
+admin.site.register(CarModel)
+admin.site.register(Lesson)
