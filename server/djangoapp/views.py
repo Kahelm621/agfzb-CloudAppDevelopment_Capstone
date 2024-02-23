@@ -1,66 +1,52 @@
-from django.contrib.auth.forms import UserCreationForm
+# views.py
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
-from .models import Dealer, Car, Review
-
-def index(request):
-    return render(request, 'djangoapp/index.html')
-
-def about(request):
-    return render(request, 'djangoapp/about.html')
-
-def contact(request):
-    return render(request, 'djangoapp/contact.html')
-
-def login_request(request):
-    if request.user.is_authenticated:
-        return redirect('djangoapp:index')
-    return render(request, 'djangoapp/login.html')
-
-def logout_request(request):
-    logout(request)
-    return redirect('djangoapp:index')
-
-def registration_request(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('djangoapp:index')
-    else:
-        form = UserCreationForm()
-    return render(request, 'djangoapp/registration.html', {'form': form})
-
-@login_required
-def get_dealer_details(request, dealer_id):
-    context = {}
-    reviews = Review.objects.filter(dealer_id=dealer_id)
-    context['reviews'] = reviews
-    return render(request, 'djangoapp/dealer_details.html', context)
-
-@login_required
-def add_review(request, dealer_id):
-    if request.method == 'POST':
-        content = request.POST.get('content')
-        purchase_check = request.POST.get('purchasecheck')
-        car_id = request.POST.get('car')
-        purchase_date = request.POST.get('purchasedate')
-        review = Review.objects.create(dealer_id=dealer_id, content=content, purchase_check=purchase_check, car_id=car_id, purchase_date=purchase_date)
-        return redirect('djangoapp:get_dealer_details', dealer_id=dealer_id)
-    else:
-        dealer_cars = Car.objects.filter(dealer_id=dealer_id)
-        return render(request, 'djangoapp/add_review.html', {'cars': dealer_cars})
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+from .restapis import get_dealers_from_cf
 
 def get_dealerships(request):
-    context = {}
-    dealerships = get_dealers_from_cf()  # Assuming this function retrieves dealer information
-    context['dealership_list'] = dealerships
-    return render(request, 'djangoapp/index.html', context)
+    if request.method == "GET":
+        url = "your-URL-implemented-using-CLI/dealerships/get"
+        dealerships = get_dealers_from_cf(url)
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        return HttpResponse(dealer_names)
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('index')  # Redirect to the index page after login
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'login.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('index')  # Redirect to the index page after logout
 
+def registration_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+        else:
+            try:
+                user = User.objects.create_user(username=username, password=password)
+                messages.success(request, 'User created successfully. Please log in.')
+                return redirect('login')  # Redirect to login page after successful registration
+            except Exception as e:
+                messages.error(request, f'An error occurred: {e}')
+    return render(request, 'registration.html')
 
-
+def index_view(request):
+    context = {}  # You may populate context data here
+    return render(request, 'index.html', context)
 
 

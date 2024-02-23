@@ -1,30 +1,25 @@
 from django.contrib import admin
-from .models import CarMake, CarModel, Course, Instructor, Lesson
+from .models import CarMake, CarModel
 
-class CourseAdmin(admin.ModelAdmin):
-    fields = ['pub_date', 'name', 'description']
-
-class InstructorAdmin(admin.ModelAdmin):
-    fields = ['user', 'full_time']
-
-class LessonInline(admin.StackedInline):
-    model = Lesson 
-    extra = 5
-
-class CourseAdminWithLesson(admin.ModelAdmin):
-    fields = ['pub_date', 'name', 'description']
-    inlines = [LessonInline]
 
 class CarModelInline(admin.TabularInline):
     model = CarModel
+    extra = 1
+
+class CarModelAdmin(admin.ModelAdmin):
+    # Define the admin representation for CarModel model
+    list_display = ('name', 'make', 'type', 'year', 'dealer_id')
+    list_filter = ('make', 'type', 'year')
+    search_fields = ('name', 'make__name', 'type')
 
 class CarMakeAdmin(admin.ModelAdmin):
+    # Define the admin representation for CarMake model
+    list_display = ('name', 'description')
+    search_fields = ('name',)
     inlines = [CarModelInline]
 
-# Register models with their respective admin classes
-admin.site.register(Course, CourseAdminWithLesson)
-admin.site.register(Instructor, InstructorAdmin)
+# Register CarMake and CarModel models with their respective admins
 admin.site.register(CarMake, CarMakeAdmin)
-admin.site.register(CarModel)
-admin.site.register(Lesson)
+admin.site.register(CarModel, CarModelAdmin)
+
 

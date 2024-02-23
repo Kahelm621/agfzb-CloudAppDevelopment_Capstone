@@ -4,36 +4,33 @@ from django.conf import settings
 from . import views
 
 app_name = 'djangoapp'
+
 urlpatterns = [
-    # path for about view
-    path('about/', views.about, name='about'),
+    # Path for registration
+    path('registration/', views.registration_view, name='registration'),
 
-    # path for contact us view
-    path('contact/', views.contact, name='contact'),
+    # Path for login
+    path('login/', views.login_view, name='login'),
 
-    # path for registration
-    path('registration/', views.registration_request, name='registration'),
+    # Path for logout
+    path('logout/', views.logout_view, name='logout'),
 
-    # path for login
-    path('login/', views.login_request, name='login'),
+    # Default index path
+    path('', views.index_view, name='index'),
 
-    # path for logout
-    path('logout/', views.logout_request, name='logout'),
+    # Additional path for get_dealerships view
+    path('get_dealerships/', views.get_dealerships, name='get_dealerships'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    # path for dealer reviews view
-    path('dealer/<int:dealer_id>/', views.get_dealer_details, name='dealer_details'),
+# urls.py
 
-    # path for add a review view
-    path('dealer/<int:dealer_id>/add_review/', views.add_review, name='add_review'),
+from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
+from . import views
 
-    # path for index view (should be at the end)
-    path('', views.get_dealerships, name='index'),
-] 
+app_name = 'djangoapp'
 
-# Add the signup URL pattern
-urlpatterns += [
-    path('signup/', views.signup, name='signup'),
-]
-
-# Serve media files in development
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = [
+    path(route='', view=views.get_dealerships, name='index')
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
