@@ -4,6 +4,7 @@ from django.conf import settings
 from . import views
 
 app_name = 'djangoapp'
+
 urlpatterns = [
     # path for about view
     path('about/', views.about, name='about'),
@@ -29,3 +30,4 @@ urlpatterns = [
     # path for add a review view
     path('dealer/<int:dealer_id>/add_review/', views.add_review, name='add_review'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
