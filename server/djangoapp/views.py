@@ -1,70 +1,89 @@
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib import messages
 from django.urls import reverse
 from .models import Dealer
 
-def get_dealerships(request):
-    if request.method == "GET":
-        url = "your-URL-implemented-using-CLI/dealerships/get"
-        dealerships = get_dealers_from_cf(url)
-        dealer_names = [dealer.short_name for dealer in dealerships]
-        return JsonResponse(dealer_names, safe=False)
+# About view
+def about(request):
+    # Render the about page
+    return render(request, 'djangoapp/about.html')
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+# Contact view
+def contact(request):
+    # Render the contact page
+    return render(request, 'djangoapp/contact.html')
+
+# Registration view
+def registration_request(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f"Account created successfully for {username}. Please log in.")
+            return redirect('djangoapp:login')  # Redirect to login page after registration
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = UserCreationForm()
+    return render(request, 'djangoapp/registration.html', {'form': form})
+
+# Login view
+def login_request(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('index')  
+            messages.success(request, "You have successfully logged in.")
+            return redirect('djangoapp:index')  # Redirect to index page after login
         else:
-            messages.error(request, 'Invalid username or password.')
-    return render(request, 'login.html')
+            messages.error(request, "Invalid username or password.")
+    return render(request, 'djangoapp/login.html')
 
-def logout_view(request):
+# Logout view
+def logout_request(request):
     logout(request)
-    return redirect('index')
+    messages.info(request, "You have been logged out.")
+    return redirect('djangoapp:index')  # Redirect to index page after logout
 
-def registration_view(request):
+# Sign-up view
+def signup(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists.')
-        else:
-            try:
-                user = User.objects.create_user(username=username, password=password)
-                messages.success(request, 'User created successfully. Please log in.')
-                return redirect('login')
-            except Exception as e:
-                messages.error(request, f'An error occurred: {e}')
-    return render(request, 'registration.html')
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "You have successfully signed up.")
+            return redirect('djangoapp:index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'djangoapp/signup.html', {'form': form})
 
-def index_view(request):
-    context = {}
-    return render(request, 'index.html', context)
+# Index view
+def get_dealerships(request):
+    # Logic to retrieve dealerships
+    return render(request, 'djangoapp/index.html')
 
+# Dealer details view
 def get_dealer_details(request, dealer_id):
     dealer = get_object_or_404(Dealer, id=dealer_id)
     reviews = dealer.reviews.all()
     context = {'dealer': dealer, 'reviews': reviews}
-    return render(request, 'dealer_details.html', context)
+    return render(request, 'djangoapp/dealer_details.html', context)
 
+# Add review view
 def add_review(request, dealer_id):
-    dealer = get_object_or_404(Dealer, id=dealer_id)
-    if request.method == 'GET':
-        context = {'dealer': dealer}
-        return render(request, 'add_review.html', context)
-    elif request.method == 'POST':
-        # Process form submission and save review
-        # Assuming 'Review' model exists and 'review_text' is a field in the model
-        review_text = request.POST.get('review_text')
-        dealer.reviews.create(review_text=review_text)
-        return HttpResponseRedirect(reverse('dealer_details', args=[dealer_id]))
-
+    if request.method == "POST":
+        # Logic to add a review
+        return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
+    return render(request, 'djangoapp/add_review.html')
 
 

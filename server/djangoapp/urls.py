@@ -6,31 +6,30 @@ from . import views
 app_name = 'djangoapp'
 
 urlpatterns = [
+    # Path for about view
+    path('about/', views.about, name='about'),
+
+    # Path for contact us view
+    path('contact/', views.contact, name='contact'),
+
     # Path for registration
-    path('registration/', views.registration_view, name='registration'),
+    path('registration/', views.registration_request, name='registration'),
 
     # Path for login
-    path('login/', views.login_view, name='login'),
+    path('login/', views.login_request, name='login'),
 
     # Path for logout
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', views.logout_request, name='logout'),
 
-    # Default index path
-    path('', views.index_view, name='index'),
+    # Path for index view
+    path('', views.get_dealerships, name='index'),
 
-    # Additional path for get_dealerships view
-    path('get_dealerships/', views.get_dealerships, name='get_dealerships'),
+    # Path for dealer details view
+    path('dealer/<int:dealer_id>/', views.get_dealer_details, name='dealer_details'),
+
+    # Path for add a review view
+    path('dealer/<int:dealer_id>/add_review/', views.add_review, name='add_review'),
+
+    # Static media URL configuration
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# urls.py
-
-from django.urls import path
-from django.conf.urls.static import static
-from django.conf import settings
-from . import views
-
-app_name = 'djangoapp'
-
-urlpatterns = [
-    path(route='', view=views.get_dealerships, name='index')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
