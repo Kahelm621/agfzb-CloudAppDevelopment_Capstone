@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Dealer
+from .models import CarDealer
 
 # About view
 def about(request):
