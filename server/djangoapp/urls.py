@@ -21,6 +21,9 @@ urlpatterns = [
     # Path for logout
     path('logout/', views.logout_request, name='logout'),
 
+    # Path for signup
+    path('signup/', views.signup, name='signup'),
+
     # Path for index view
     path('', views.get_dealerships, name='index'),
 
@@ -32,4 +35,5 @@ urlpatterns = [
 
     # Static media URL configuration
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 

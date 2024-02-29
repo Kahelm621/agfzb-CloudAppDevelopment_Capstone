@@ -1,9 +1,9 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Dealership Review</title>
-    <!-- Include your CSS and JavaScript libraries -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -13,85 +13,43 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Dealership Review</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
+    
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <!-- Add other navigation links here -->
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                {% if user.is_authenticated %}
-                    <!-- Display user's first name or username -->
-                    <li class="nav-item">
-                        <span class="navbar-text">
-                            {% if user.first_name %}
-                                {{ user.first_name }}
-                            {% else %}
-                                {{ user.username }}
-                            {% endif %}
-                        </span>
-                    </li>
-                    <!-- Logout form -->
-                    <li class="nav-item">
-                        <form class="form-inline" action="{% url 'djangoapp:logout' %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Logout</button>
-                        </form>
-                    </li>
-                {% else %}
-                    <!-- Login form -->
-                    <li class="nav-item">
-                        <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
-                            {% csrf_token %}
-                            <input class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Username" name="username">
-                            <input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password" name="password">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
-                        </form>
-                    </li>
-                    <!-- Signup link -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'djangoapp:signup' %}">Sign Up</a>
-                    </li>
-                {% endif %}
-            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Username">
+                <input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+            </form>
+            <a class="nav-link" href="{% url 'djangoapp:registration' %}">Signup</a>
         </div>
     </nav>
 
-    <!-- Dealer Table -->
-    <div class="container mt-4">
-        <h2>Dealers</h2>
-        <table id="dealerTable" data-toggle="table" data-filter-control="true" data-sortable="true">
+    <div class="container">
+        <h1>Welcome to Dealership Review</h1>
+        <p>This is the index page of your Django app!</p>
+        <!--Add a dealer table here -->
+        <table
+            data-toggle="table"
+            data-url="data.json"
+            data-pagination="true"
+            data-search="true"
+            data-filter-control="true">
             <thead>
                 <tr>
-                    <th data-field="id" data-filter-control="input" data-sortable="true">ID</th>
-                    <th data-field="name" data-filter-control="input" data-sortable="true">Name</th>
-                    <!-- Add other table headers as needed -->
+                    <th data-field="id">ID</th>
+                    <th data-field="name">Name</th>
+                    <th data-field="price">Price</th>
+                    <th data-field="year">Year</th>
+                    <th data-field="mileage">Mileage</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Loop through your dealerships and display them as table rows -->
-                <!-- Example: -->
-                <!-- {% for dealership in dealerships %}
-                <tr>
-                    <td>{{ dealership.id }}</td>
-                    <td>{{ dealership.name }}</td>
-                    <!-- Add other dealership information as needed -->
-                </tr>
-                {% endfor %} -->
-            </tbody>
         </table>
     </div>
-
-    <!-- Include any additional content for your index page -->
 </body>
 </html>
-
 

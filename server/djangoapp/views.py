@@ -86,4 +86,3 @@ def add_review(request, dealer_id):
         return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
     return render(request, 'djangoapp/add_review.html')
 
-
