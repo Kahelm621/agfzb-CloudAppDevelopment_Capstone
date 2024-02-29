@@ -82,12 +82,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',  # Change if your database has a different name
-        'USER': 'postgres',
-        'PASSWORD': 'Nzg3Mi15bHVvLTIz',
-        'HOST': 'yluo-5050.theiadocker-1.proxy.cognitiveclass.ai',
-        'PORT': '5432',  # Default PostgreSQL port
+        'USER': 'khelmshustle',  # Use the provided username
+        'PASSWORD': 'ODczOC1raGVsbXNo',  # Use the provided password
+        'HOST': '127.0.0.1',  # Use the provided host (localhost)
+        'PORT': '5432',  # Use the provided port
     }
 }
+
 
 
 # Password validation
