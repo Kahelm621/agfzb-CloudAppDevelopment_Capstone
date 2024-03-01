@@ -1,17 +1,22 @@
 from cloudant.client import Cloudant
-from cloudant.query import Query
-from flask import Flask, jsonify, request
-import atexit
+from flask import Flask, jsonify, request, abort
 
-#Add your Cloudant service credentials here
-cloudant_username = ''
-cloudant_api_key = ''
-cloudant_url = ''
+# Add your Cloudant service credentials here
+cloudant_username = "fe3a4d3f-7121-4c42-a808-4aaa7551a198-bluemix"
+cloudant_api_key = "NcS6IMZjZjT08Af8w3YmDRZLJ2m-DSu1Z0pGzi6smud-"
+cloudant_url = "https://fe3a4d3f-7121-4c42-a808-4aaa7551a198-bluemix.cloudantnosqldb.appdomain.cloud"
+
+# Connect to Cloudant using the provided credentials
 client = Cloudant.iam(cloudant_username, cloudant_api_key, connect=True, url=cloudant_url)
 
+# Connect to the service instance
+client.connect()
+
+# Create a Cloudant session
 session = client.session()
 print('Databases:', client.all_dbs())
 
+# Specify the database
 db = client['reviews']
 
 app = Flask(__name__)
@@ -31,9 +36,7 @@ def get_reviews():
         return jsonify({"error": "'id' parameter must be an integer"}), 400
 
     # Define the query based on the 'dealership' ID
-    selector = {
-        'dealership': dealership_id
-    }
+    selector = {'dealership': dealership_id}
 
     # Execute the query using the query method
     result = db.get_query_result(selector)
@@ -63,10 +66,15 @@ def post_review():
         if field not in review_data:
             abort(400, description=f'Missing required field: {field}')
 
-    # Save the review data as a new document in the Cloudant database
-    db.create_document(review_data)
+    try:
+        # Save the review data as a new document in the Cloudant database
+        doc_info = db.create_document(review_data)
+        # Extracting doc_id and doc_rev from the returned tuple
+        doc_id, doc_rev = doc_info
+    except ValueError:
+        abort(500, description='Failed to create document in the database')
 
-    return jsonify({"message": "Review posted successfully"}), 201
+    return jsonify({"message": "Review posted successfully", "id": doc_id, "rev": doc_rev}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)
