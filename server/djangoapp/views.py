@@ -1,11 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseRedirect
-from django.urls import reverse
-from .models import CarDealer
+from .models import CarDealer, Review
 
 # About view
 def about(request):
@@ -69,21 +67,28 @@ def signup(request):
 
 # Index view
 def get_dealerships(request):
-    # Logic to retrieve dealerships
-    return render(request, 'djangoapp/index.html')
+    dealerships = CarDealer.objects.all()  # Assuming CarDealer is your dealership model
+    context = {'dealership_list': dealerships}
+    return render(request, 'djangoapp/index.html', context)
 
 # Dealer details view
 def get_dealer_details(request, dealer_id):
-    dealer = get_object_or_404(Dealer, id=dealer_id)
+    dealer = get_object_or_404(CarDealer, id=dealer_id)
     reviews = dealer.reviews.all()
     context = {'dealer': dealer, 'reviews': reviews}
     return render(request, 'djangoapp/dealer_details.html', context)
 
 # Add review view
+@login_required
 def add_review(request, dealer_id):
     if request.method == "POST":
         # Logic to add a review
         return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
-    return render(request, 'djangoapp/add_review.html')
+    else:
+        dealer = get_object_or_404(CarDealer, id=dealer_id)
+        cars = dealer.car_set.all()
+        return render(request, 'djangoapp/add_review.html', {'dealer': dealer, 'cars': cars})
+
+
 
 

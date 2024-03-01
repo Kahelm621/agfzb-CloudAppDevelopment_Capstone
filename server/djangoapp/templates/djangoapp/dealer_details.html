@@ -52,5 +52,14 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Link to add review -->
+    {% if user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-primary">Add Review</a>
+        </div>
+    {% endif %}
 {% endblock %}
+
+
 
